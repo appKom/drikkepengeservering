@@ -1,0 +1,12 @@
+{
+  "name": "olcoin-backend",
+  "version": "1.0.0",
+  "description": "Backend for managing olcoin balance at kontoret",
+  "main": "index.js",
+  "repository": "git@github.com:appKom/drikkepengeservering.git",
+  "author": "appkom",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
