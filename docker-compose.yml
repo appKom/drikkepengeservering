@@ -4,9 +4,11 @@ services:
   nodejs:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: nodejs
-    container_name: nodejs
+      dockerfile: node.Dockerfile
+    image: node:lts-alpine
+    container_name: node
+    depends_on: 
+      - mongodb
     restart: unless-stopped
     env_file:
       - ./.env
@@ -16,13 +18,13 @@ services:
       - MONGO_HOSTNAME=mongodb
       - MONGO_PORT=$MONGO_PORT
       - MONGO_DB=$MONGO_DB
-      - NODE_HOSTNAME=nodejs
+      - NODE_HOSTNAME=node
       - NODE_PORT=8080
     ports:
       - "443:8080"
-    volumes:
-      - .:/srv/app
-      - node_modules:/srv/app/node_modules
+    # volumes:
+    #   - .:/srv/app
+    #   - node_modules:/srv/app/node_modules
     networks:
       - app-network  
   mongodb:
@@ -37,12 +39,14 @@ services:
     ports:
       - "27017:27017"
     volumes:  
-      - ./data:/data/mongodb   
+      - data:/data/mongodb   
     networks:
       - app-network
   mongoexpress:
     image: mongo-express:latest
     container_name: mongo-express
+    depends_on: 
+      - mongodb
     restart: unless-stopped
     env_file:
       - ./.env
@@ -56,8 +60,6 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongodb
     ports:
       - "8081:8081"
-    volumes:  
-      # - ./data:/data/mongodb   
     networks:
       - app-network
 
@@ -67,5 +69,5 @@ networks:
     driver: bridge
 
 volumes:
-  dbdata:
-  node_modules:
+  data:
+  # node_modules:
