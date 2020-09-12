@@ -1,21 +1,18 @@
-import express,{ Request, Response } from 'express';
+import express from 'express';
+
+import apiRouter from './routes/api';
+import mongoExpressRouter from './routes/mongoexpress';
 
 const app = express();
 
 // app.use(auth);
 
-app.get('/api/v1/', (req: Request, res: Response) => {
-  res.send('');
-});
+app.use('/api/v1', apiRouter);
+app.use('/mongoexpress', mongoExpressRouter)
 
-// POST - /auth - Get auth token
-// GET - /balance - gets user balance
-// POST - /balance - updates balance
-// PUT - /user - Puts a user into the db
-// DELETE - /user - Deletes a user from the db
 
 const HOSTNAME = process.env.NODE_HOSTNAME;
-const PORT = process.env.NODE_PORT || 8080
+const PORT = process.env.NODE_PORT || 8080;
 
 app.listen({
   port: PORT, 
