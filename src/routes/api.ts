@@ -3,26 +3,56 @@ import user from '../models/user';
 const apiRouter = Router();
 
 apiRouter.use(json());
-
-
-apiRouter.get('/balance', (req, res) => {
-  res.send('Got balance')
-});
+//apiRouter.use(auth());
 
 apiRouter.post('/user', (req, res) => {
   try {
+    console.log(`POST: user/${req.body.userId}`);
 
-    const theUser = new user({
+    const newUser = new user({
       userId: req.body.userId,
-      rfid: req.body.rfid,
-      coins: 0,
-      createAt: Date.now()
+      coins: 0
     });
 
-    theUser.save();
-    
+    newUser.save();
     res.sendStatus(200);
+
   } catch (error) {
+    console.log(`ERROR: ${error.message}`);
+    res.status(500)
+    res.send('Something went wrong');
+  }
+});
+
+apiRouter.get('/user/:userId', (req, res) => {
+  try {
+    console.log(`GET: user/${req.params.userId}`);
+    
+    const returnable = user.findOne({'userId': req.params.userId});
+    console.log(returnable);
+    
+    res.send(returnable);
+
+  } catch (error) {
+    console.log(`ERROR: ${error.message}`);
+    res.status(500)
+    res.send('Something went wrong');
+  }
+});
+
+apiRouter.put('/user/:userId', (req, res) => {
+  try {
+    
+    // TODO: Save the updated values?
+    user.findOneAndUpdate(
+      {"userId": req.query.userId},
+      {'coins': req.body.coins}
+    );
+
+    res.sendStatus(200);
+
+  } catch (error) {
+    console.log(`ERROR: ${error.message}`);
     res.status(500)
     res.send('Something went wrong');
   }
@@ -30,9 +60,6 @@ apiRouter.post('/user', (req, res) => {
 
 
 // POST - /auth - Get auth token
-// GET - /balance - gets user balance
-// POST - /balance - updates balance
-// PUT - /user - Puts a user into the db
 // DELETE - /user - Deletes a user from the db
 
 export default apiRouter;
