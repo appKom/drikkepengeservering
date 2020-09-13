@@ -5,10 +5,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  rfid: {
-    type: String,
-    required: true
-  },
   coins: {
     type: Number,
     required: true
