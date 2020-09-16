@@ -1,35 +1,31 @@
 import express from 'express';
 import https from 'https';
-
-import mongoose from 'mongoose';
+import { Pool } from 'pg'
 
 import apiRouter from './routes/api';
-import mongoExpressRouter from './routes/mongoexpress';
+import pgAdminRouter from './routes/pgAdmin';
 
 const app = express();
 
 // app.use(auth);
 
 export const {
-  MONGO_USERNAME,
-  MONGO_PASSWORD,
-  MONGO_HOSTNAME,
-  MONGO_PORT,
-  MONGO_DB
+  PG_USER,
+  PG_PASSWORD
 } = process.env;
 
-const MONGO_URL = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+const dbPool = new Pool({
+  user: PG_USER,
+  password: PG_PASSWORD,
+  database: 'olcoins',
+  host: 'postgres',
+  port: 5432
+});
 
-
-mongoose.connect(
-  MONGO_URL,
-  {useNewUrlParser: true},
-  () => console.log(`Connected to database ${MONGO_DB} at ${MONGO_HOSTNAME}:${MONGO_PORT}`)
-);
-
+dbPool.connect()
 
 app.use('/api/v1', apiRouter);
-app.use('/mongoexpress', mongoExpressRouter)
+app.use('/pgadmin', pgAdminRouter)
 
 
 const HOSTNAME = process.env.NODE_HOSTNAME;
