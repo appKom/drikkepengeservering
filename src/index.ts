@@ -11,13 +11,14 @@ const app = express();
 
 export const {
   PG_USER,
-  PG_PASSWORD
+  PG_PASSWORD,
+  PG_DB
 } = process.env;
 
 const dbPool = new Pool({
   user: PG_USER,
   password: PG_PASSWORD,
-  database: 'olcoins',
+  database: PG_DB,
   host: 'postgres',
   port: 5432
 });

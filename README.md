@@ -14,6 +14,7 @@ Noen verdier må settes opp selv og noen har foreslåtte verdier
 NODE_HOSTNAME=127.0.0.1
 NODE_POST=8080
 
+PG_DB=<Navn på database>
 PG_USER=<Brukernavn for database>
 PG_PASSWORD=<Passord for database>
 PGA_EMAIL=<Email for pgAdmin login>
