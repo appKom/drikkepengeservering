@@ -1,20 +1,15 @@
 import { Router, json } from 'express';
-import user from '../models/user';
 const apiRouter = Router();
 
 apiRouter.use(json());
-//apiRouter.use(auth());
+// apiRouter.use(auth()); // Authenticate the server by sertificate and/or IP address
 
 apiRouter.post('/user', (req, res) => {
   try {
     console.log(`POST: user/${req.body.userId}`);
 
-    const newUser = new user({
-      userId: req.body.userId,
-      coins: 0
-    });
+    // Make user in db
 
-    newUser.save();
     res.sendStatus(200);
 
   } catch (error) {
@@ -28,10 +23,9 @@ apiRouter.get('/user/:userId', (req, res) => {
   try {
     console.log(`GET: user/${req.params.userId}`);
     
-    const returnable = user.findOne({'userId': req.params.userId});
-    console.log(returnable);
-    
-    res.send(returnable);
+    // Serialize and return user data
+
+    res.sendStatus(200);
 
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
@@ -43,11 +37,7 @@ apiRouter.get('/user/:userId', (req, res) => {
 apiRouter.put('/user/:userId', (req, res) => {
   try {
     
-    // TODO: Save the updated values?
-    user.findOneAndUpdate(
-      {"userId": req.query.userId},
-      {'coins': req.body.coins}
-    );
+    // Delete user
 
     res.sendStatus(200);
 
