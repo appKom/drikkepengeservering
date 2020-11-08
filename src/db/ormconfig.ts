@@ -12,8 +12,9 @@ const ormConfig: ConnectionOptions = {
   database: PG_DB || '',
   username: PG_USER || '',
   password: PG_PASSWORD || '',
+  port: 5432,
   synchronize: true,
-  logging: false,
+  logging: true,
   migrationsTableName: 'migrations',
   entities: [
     'src/db/entity/**/*.ts'
@@ -29,6 +30,7 @@ const ormConfig: ConnectionOptions = {
     migrationsDir: 'src/db/migration',
     subscribersDir: 'src/db/subscriber'
   }
+
 };
 
 export default ormConfig;
