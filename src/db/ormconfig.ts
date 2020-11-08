@@ -7,6 +7,7 @@ const {
 } = process.env
 
 const ormConfig: ConnectionOptions = {
+  name: 'default',
   host: 'postgres',
   type: 'postgres',
   database: PG_DB || '',
@@ -30,7 +31,6 @@ const ormConfig: ConnectionOptions = {
     migrationsDir: 'src/db/migration',
     subscribersDir: 'src/db/subscriber'
   }
-
 };
 
 export default ormConfig;

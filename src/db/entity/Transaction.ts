@@ -1,3 +1,4 @@
+import { type } from "os";
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
 import { User } from './User'
 
@@ -5,18 +6,18 @@ import { User } from './User'
 export class Transaction {
 
   @PrimaryGeneratedColumn()
-  id: number;
-  
+  id!: number;
+
   @ManyToOne(type => User, user => user.transactions)
-  userId: User;
+  userId!: User;
 
   @Column()
-  type: string;
-  
+  type!: string;
+
   @Column()
-  coins: number;
-  
-  @Column()
-  date: string;
-  
+  coins!: number;
+
+  @Column({ type: 'bigint' })
+  date!: string;
+
 }
