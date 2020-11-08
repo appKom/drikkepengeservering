@@ -12,6 +12,7 @@ export const {
 } = process.env;
 
 createConnection({
+  host: 'postgres',
   type: 'postgres',
   database: PG_DB,
   username: PG_USER,
