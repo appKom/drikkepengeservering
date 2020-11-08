@@ -1,65 +1,52 @@
 import { Router, json } from 'express';
-import user from '../models/user';
+import { User } from '../db/entity/User';
+import { createUser, deleteUser, findUser } from '../service/User';
 const apiRouter = Router();
 
 apiRouter.use(json());
-//apiRouter.use(auth());
+// apiRouter.use(auth()); // Authenticate the server by sertificate and/or IP address
 
-apiRouter.post('/user', (req, res) => {
+apiRouter.post('/user', async (req, res) => {
   try {
     console.log(`POST: user/${req.body.userId}`);
-
-    const newUser = new user({
-      userId: req.body.userId,
-      coins: 0
-    });
-
-    newUser.save();
+    await createUser(req.body.userId);
     res.sendStatus(200);
-
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
-    res.status(500)
-    res.send('Something went wrong');
+    res
+      .status(500)
+      .send('Something went wrong');
   }
 });
 
-apiRouter.get('/user/:userId', (req, res) => {
+apiRouter.get('/user/:userId', async (req, res) => {
   try {
     console.log(`GET: user/${req.params.userId}`);
-    
-    const returnable = user.findOne({'userId': req.params.userId});
-    console.log(returnable);
-    
-    res.send(returnable);
-
+    res
+      .status(200)
+      .send(await findUser(parseInt(req.params.userId)));
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
-    res.status(500)
-    res.send('Something went wrong');
+    res
+      .status(500)
+      .send('Something went wrong');
   }
 });
 
 apiRouter.put('/user/:userId', (req, res) => {
   try {
-    
-    // TODO: Save the updated values?
-    user.findOneAndUpdate(
-      {"userId": req.query.userId},
-      {'coins': req.body.coins}
-    );
-
+    console.log(`DEL: user/${req.params.userId}`);
+    deleteUser(parseInt(req.params.userId));
     res.sendStatus(200);
-
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
-    res.status(500)
-    res.send('Something went wrong');
+    res
+      .status(500)
+      .send('Something went wrong');
   }
 });
 
 
 // POST - /auth - Get auth token
-// DELETE - /user - Deletes a user from the db
 
 export default apiRouter;

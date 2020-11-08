@@ -1,64 +1,58 @@
 version: '3'
 
 services:
-  nodejs:
+  node:
     build:
       context: .
-      dockerfile: node.Dockerfile
-    image: node:lts-alpine
+      dockerfile: docker_images/node.Dockerfile
     container_name: node
     depends_on: 
-      - mongodb
+      - postgres
     restart: unless-stopped
     env_file:
       - ./.env
     environment:
-      - MONGO_USERNAME=$MONGO_USERNAME
-      - MONGO_PASSWORD=$MONGO_PASSWORD
-      - MONGO_HOSTNAME=mongodb
-      - MONGO_PORT=$MONGO_PORT
-      - MONGO_DB=$MONGO_DB
       - NODE_HOSTNAME=node
       - NODE_PORT=8080
     ports:
       - "443:8080"
     volumes:
-      - ./src:/srv/app/src
+      - ./src:/node/src
     networks:
-      - app-network  
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
+      - app-network
+  
+  postgres:
+    build:
+      context: .
+      dockerfile: docker_images/postgres.Dockerfile
+    container_name: postgres
     restart: unless-stopped
     env_file:
       - ./.env
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+      - POSTGRES_DB=$PG_DB
+      - POSTGRES_USER=$PG_USER
+      - POSTGRES_PASSWORD=$PG_PASSWORD
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:  
-      - data:/srv/app/data/mongodb
+      - data:/postgres/data
     networks:
       - app-network
-  mongoexpress:
-    image: mongo-express:latest
-    container_name: mongo-express
+  
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgAdmin
     depends_on: 
-      - mongodb
+      - postgres
     restart: unless-stopped
     env_file:
       - ./.env
     environment: 
-      - ME_CONFIG_BASICAUTH_USERNAME=$ME_USERNAME
-      - ME_CONFIG_BASICAUTH_PASSWORD=$ME_PASSWORD
-      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=$MONGO_USERNAME
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=$MONGO_PASSWORD
-      - ME_CONFIG_MONGODB_PORT=$MONGO_PORT
-      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - PGADMIN_DEFAULT_EMAIL=$PGA_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD=$PGA_PASSWORD
     ports:
-      - "8081:8081"
+      - "8081:80"
     networks:
       - app-network
 

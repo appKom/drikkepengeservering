@@ -14,13 +14,11 @@ Noen verdier må settes opp selv og noen har foreslåtte verdier
 NODE_HOSTNAME=127.0.0.1
 NODE_POST=8080
 
-MONGO_USERNAME=<Brukernavn for direkte databasetilgang>
-MONGO_PASSWORD=<Passord for direkte databasetilgang>
-MONGO_PORT=27017
-MONGO_DB=olcoins
-
-ME_USERNAME=<Brukernavn for innlogging til database-frontend>
-ME_PASSWORD=<Passord for innlogging til database-frontend>
+PG_DB=<Navn på database>
+PG_USER=<Brukernavn for database>
+PG_PASSWORD=<Passord for database>
+PGA_EMAIL=<Email for pgAdmin login>
+PGA_PASSWORD=<Passord for pgAdmin login>
 ```
 
 Bygg docker-bildene og start docker-compose med denne kommandoen:
