@@ -17,3 +17,4 @@ test/*.log
 
 *.env
 build/
+.log
