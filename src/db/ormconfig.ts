@@ -15,7 +15,7 @@ const ormConfig: ConnectionOptions = {
   password: PG_PASSWORD || '',
   port: 5432,
   synchronize: true,
-  logging: true,
+  logging: false,
   migrationsTableName: 'migrations',
   entities: [
     'src/db/entity/**/*.ts'

@@ -1,52 +1,108 @@
 import { Router, json } from 'express';
-import { User } from '../db/entity/User';
-import { createUser, deleteUser, findUser } from '../service/User';
+import { createUser, deleteUser, findUser, addTransaction, UserNotFoundError, BalanceNotSufficientError, UserExistsError } from '../service/User';
 const apiRouter = Router();
 
 apiRouter.use(json());
-// apiRouter.use(auth()); // Authenticate the server by sertificate and/or IP address
+// apiRouter.use(auth()); // TODO: Authenticate the server by certificate and/or IP address
 
-apiRouter.post('/user', async (req, res) => {
+
+// User Creation
+apiRouter.put('/user/:userId', async (req, res) => {
   try {
-    console.log(`POST: user/${req.body.userId}`);
-    await createUser(req.body.userId);
-    res.sendStatus(200);
+    console.log(`PUT: user/${req.params.userId}`);
+    await createUser(parseInt(req.params.userId));
+    return res.sendStatus(200);
+
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
-    res
-      .status(500)
-      .send('Something went wrong');
+		switch(error.constructor) {
+			case UserExistsError:
+				return res
+					.status(403)
+					.json({"error": error.message});
+			default:
+				return res
+					.status(500)
+					.json({"error": error.message});
+		}
   }
 });
 
+// Get user balance
 apiRouter.get('/user/:userId', async (req, res) => {
   try {
     console.log(`GET: user/${req.params.userId}`);
-    res
+		const user = await findUser(parseInt(req.params.userId));
+    return res
       .status(200)
-      .send(await findUser(parseInt(req.params.userId)));
+      .send(user);
+
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
-    res
-      .status(500)
-      .send('Something went wrong');
+		switch(error.constructor) {
+			case UserNotFoundError:
+				return res
+					.status(404)
+					.json({"error": error.message});
+			default:
+				return res
+					.status(500)
+					.json({"error": error.message});
+		}
   }
 });
 
-apiRouter.put('/user/:userId', (req, res) => {
+// Add transaction
+apiRouter.post('/user/:userId', async (req, res) => {
+  try {
+    console.log(`POST: user/${req.params.userId} <- ${req.body.coins}kr`);
+    await addTransaction(
+			parseInt(req.params.userId),
+			parseInt(req.body.coins)
+		);
+    return res.sendStatus(200);
+
+  } catch (error) {
+    console.log(`ERROR: ${error.message}`);
+
+		switch(error.constructor) {
+			case UserNotFoundError:
+				return res
+					.status(404)
+					.json({"error": error.message});
+			case BalanceNotSufficientError:
+				return res
+					.status(403)
+					.json({"error": error.message});
+			default:
+				return res
+					.status(500)
+					.json({"error": error.message});
+		}
+  }	
+});
+
+// Delete user
+apiRouter.delete('/user/:userId', async (req, res) => {
   try {
     console.log(`DEL: user/${req.params.userId}`);
-    deleteUser(parseInt(req.params.userId));
-    res.sendStatus(200);
+    await deleteUser(parseInt(req.params.userId))
+    return res.sendStatus(200);
+
   } catch (error) {
     console.log(`ERROR: ${error.message}`);
-    res
-      .status(500)
-      .send('Something went wrong');
-  }
+
+		switch(error.constructor) {
+			case UserNotFoundError:
+				return res
+					.status(404)
+					.json({"error": error.message});
+			default:
+				return res
+					.status(500)
+					.json({"error": error.message});
+		}
+  }	
 });
-
-
-// POST - /auth - Get auth token
 
 export default apiRouter;

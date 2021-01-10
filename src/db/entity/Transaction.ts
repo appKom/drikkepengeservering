@@ -1,23 +1,18 @@
-import { type } from "os";
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, BaseEntity } from "typeorm";
 import { User } from './User'
 
 @Entity()
-export class Transaction {
+export class Transaction extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(type => User, user => user.transactions)
-  userId!: User;
-
-  @Column()
-  type!: string;
+  @ManyToOne(() => User, user => user.transactions, {onDelete: "CASCADE"})
+  user!: User;
 
   @Column()
   coins!: number;
 
   @Column({ type: 'bigint' })
-  date!: string;
-
+  date!: number;
 }

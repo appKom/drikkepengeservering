@@ -6,14 +6,12 @@ import apiRouter from './routes/api';
 import pgAdminRouter from './routes/pgAdmin';
 
 import ormConfig from './db/ormconfig'
-import { User } from "./db/entity/User";
 
 createConnection(ormConfig)
   .then(async (connection: Connection) => {
   console.log('Successfully connected to database!');
 
   const app = express();
-  // app.use(auth);
 
   app.use('/api/v1', apiRouter);
   app.use('/pgadmin', pgAdminRouter);
