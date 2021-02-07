@@ -1,6 +1,7 @@
 import { Connection, createConnection } from "typeorm";
 import express from 'express';
 import https from 'https';
+import cors from 'cors';
 
 import apiRouter from './routes/api';
 import pgAdminRouter from './routes/pgAdmin';
@@ -13,6 +14,7 @@ createConnection(ormConfig)
 
   const app = express();
 
+  app.use(cors());
   app.use('/api/v1', apiRouter);
   app.use('/pgadmin', pgAdminRouter);
 
